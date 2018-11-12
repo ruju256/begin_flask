@@ -1,0 +1,45 @@
+import psycopg2
+from psycopg2 import Error
+import os
+
+class Database():
+    def __init__(self):
+        
+        try:
+            if os.getenv('APP_SETTINGS') == "testing":
+                database = 'test_store_manager'
+            else:
+                database = 'store_manager'
+            self.connection = psycopg2.connect(
+                                        database = database,
+                                        user = "postgres",
+                                        password = "postgres",
+                                        host = "localhost",
+                                        port = "5432"                                
+                                    )           
+
+            self.cursor = self.connection.cursor()               
+            self.connection.autocommit = True
+            print("Database Connection Successful")
+        except Exception as error:
+            print("Could Not Establish Connection To {} Database".format(database), error)
+
+    def creating_users_table(self):
+        create_table = """
+            CREATE TABLE IF NOT EXISTS users
+                (
+                    id SERIAL PRIMARY KEY ,                                        
+                    first_name TEXT NOT NULL,
+                    last_name TEXT NOT NULL,
+                    email TEXT NOT NULL,
+                    password TEXT NOT NULL,
+                    role TEXT NOT NULL
+                );"""
+        self.cursor.execute(create_table)
+        return "Table users successfully created"
+    
+    def saving_a_new_user(self, first_name, last_name, email, password, role):
+        save_a_user = """
+            INSERT INTO users(first_name, last_name, email, password, role)\
+            Values('{}','{}','{}','{}','{}')""".format(first_name, last_name, email, password, role)
+        self.cursor.execute(save_a_user)
