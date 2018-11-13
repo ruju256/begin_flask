@@ -1,7 +1,9 @@
-from controllers.database import Database 
+from controllers.database import Database
 import re
 
 db = Database()
+
+
 class Users(object):
 
     def __init__(self, first_name, last_name, email, password, role):
@@ -10,7 +12,6 @@ class Users(object):
         self.email = email
         self.password = password
         self.role = role
-    
 
     def validate_input(self):
         valid = []
@@ -34,31 +35,36 @@ class Users(object):
 
         elif self.role == "":
             return "User role is required", 400
-        
         elif not self.role.isalpha():
             return "Role should only contain Letters and no spaces", 400
-            
         else:
             mail = re.match('[^@]+@[^@]+\\.[^@]+', self.email)
             if not mail:
                 return "Email should be in the format john@smith.com", 400
-            else:            
-                does_email_exist = Users.query_record('users', 'email', self.email)
-                if type(does_email_exist) is tuple:
-                    return "User with this email already exists in the database", 400
+            else:
+                email_exist = Users.query_record('users', 'email', self.email)
+                if type(email_exist) is tuple:
+                    return "Email is taken", 400
                 else:
-                    return valid.append({"first_name": self.first_name,
+                    return valid.append(
+                        {
+                            "first_name": self.first_name,
                             "last_name": self.last_name,
                             "email": self.email,
                             "passwprd": self.password,
                             "role": self.role
-                    })
-                    
-    #Adding a new user to the system
+                        })
+
     def save_user(self):
-        db.saving_a_new_user(self.first_name, self.last_name, self.email, self.password, self.role)
-        return 
-    
+        db.saving_a_new_user(
+            self.first_name,
+            self.last_name,
+            self.email,
+            self.password,
+            self.role
+            )
+        return
+
     @staticmethod
     def query_record(table_name, column_name, record):
         record = db.query(table_name, column_name, record)
