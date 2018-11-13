@@ -1,4 +1,5 @@
-from controllers.database import Database
+from controllers.database import Database 
+import re
 
 db = Database()
 class Users(object):
@@ -24,16 +25,20 @@ class Users(object):
         elif self.role == "":
             return "User role is required", 400
         else:
-            does_email_exist = Users.query_record('users', 'email', self.email)
-            if type(does_email_exist) is tuple:
-                return "User with this email already exists in the database", 400
-            else:
-                return valid.append({"first_name": self.first_name,
-                        "last_name": self.last_name,
-                        "email": self.email,
-                        "passwprd": self.password,
-                        "role": self.role
-                })
+            mail = re.match('[^@]+@[^@]+\\.[^@]+', self.email)
+            if not mail:
+                return "Email should be in the format john@smith.com", 400
+            else:            
+                does_email_exist = Users.query_record('users', 'email', self.email)
+                if type(does_email_exist) is tuple:
+                    return "User with this email already exists in the database", 400
+                else:
+                    return valid.append({"first_name": self.first_name,
+                            "last_name": self.last_name,
+                            "email": self.email,
+                            "passwprd": self.password,
+                            "role": self.role
+                    })
                     
     #Adding a new user to the system
     def save_user(self):
