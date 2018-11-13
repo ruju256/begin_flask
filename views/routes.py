@@ -14,12 +14,10 @@ def signup():
     role = post_data['role']
     
     new_user = Users(first_name, last_name, email, password, role)
-    valid_user = new_user.validate_input()
-    print(valid_user)
+    valid_user = new_user.validate_input()    
     if type(valid_user) is tuple:
             return valid_user
-    else:
-        print(valid_user)
+    else:        
         new_user.save_user()
         return jsonify({
                 'msg':'{} successfully saved'.format(first_name),

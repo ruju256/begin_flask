@@ -43,3 +43,9 @@ class Database():
             INSERT INTO users(first_name, last_name, email, password, role)\
             Values('{}','{}','{}','{}','{}')""".format(first_name, last_name, email, password, role)
         self.cursor.execute(save_a_user)
+    
+    def query(self, table_name, column_name, record):
+        record = """SELECT * FROM {} WHERE {}='{}';""".format(table_name, column_name, record)
+        self.cursor.execute(record)
+        row = self.cursor.fetchone()
+        return row
