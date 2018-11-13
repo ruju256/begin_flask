@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from models.users import Users
+import types
 
 app = Flask(__name__) #instance of flask application
 
@@ -11,16 +12,22 @@ def signup():
     email = post_data['email']
     password = post_data['password']
     role = post_data['role']
-
+    
     new_user = Users(first_name, last_name, email, password, role)
-    new_user.save_user()
-    return jsonify({
-            'msg':'{} successfully saved'.format(first_name),
-            'user': {
-                    "first_name": first_name,
-                    "last_name":last_name,
-                    "email":email,
-                    "password": password,
-                    "role":role
-                },
-        }), 201
+    valid_user = new_user.validate_input()
+    print(valid_user)
+    if type(valid_user) is tuple:
+            return valid_user
+    else:
+        print(valid_user)
+        new_user.save_user()
+        return jsonify({
+                'msg':'{} successfully saved'.format(first_name),
+                'user': {
+                        "first_name": first_name,
+                        "last_name":last_name,
+                        "email":email,
+                        "password": password,
+                        "role":role
+                        },
+                }), 201
