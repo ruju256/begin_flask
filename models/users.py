@@ -16,14 +16,28 @@ class Users(object):
         valid = []
         if self.first_name == "":
             return "Firstname is required", 400
+
+        elif not self.first_name.isalpha():
+            return "Firstname should only contain Letters and no spaces", 400
+
         elif self.last_name == "":
             return "Lastname is required", 400
+
+        elif not self.last_name.isalpha():
+            return "Lastname should only contain Letters and no spaces", 400
+
         elif self.email == "":
             return "Email is required", 400
+
         elif self.password == "":
             return "Password is required", 400
+
         elif self.role == "":
             return "User role is required", 400
+        
+        elif not self.role.isalpha():
+            return "Role should only contain Letters and no spaces", 400
+            
         else:
             mail = re.match('[^@]+@[^@]+\\.[^@]+', self.email)
             if not mail:
