@@ -1,4 +1,9 @@
 import os
+from dotenv  import load_dotenv
+# dotenv_path = join(dirname(__file__), '.env')  
+# load_dotenv(dotenv_path)
+
+
 #default configuration
 class BaseConfig(object):
     DEBUG = False
@@ -14,6 +19,7 @@ class DevelopmentConfig(BaseConfig):
 #PRODUCTION CONFIGURATION
 class ProductionConfig(BaseConfig):
     DEBUG = False
+    TESTING = False
 
 #TESTING CONFIGURATION
 class TestingConfig(BaseConfig):
@@ -23,5 +29,6 @@ class TestingConfig(BaseConfig):
 
 app_configuration = {
     "development" : DevelopmentConfig,
-    "testing" : TestingConfig
+    "testing" : TestingConfig,
+    "production": ProductionConfig
 }

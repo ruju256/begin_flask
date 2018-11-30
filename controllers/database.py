@@ -31,7 +31,7 @@ class Database():
                     role TEXT NOT NULL
                 );"""
             )
-            
+
             print("Connection to {} Database Successful".format(database))
         except Exception as error:
             print("Could Not Connect To {} Database".format(database), error)

@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 from models.users import Users
+from controllers.config import app_configuration
 
 
 
