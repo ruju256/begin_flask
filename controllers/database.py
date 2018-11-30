@@ -19,7 +19,7 @@ class Database():
                                         )
             self.cursor = self.connection.cursor()
             self.connection.autocommit = True
-            print("Database Connection Successful")
+            print("Connection to {} Database Successful".format(database))
         except Exception as error:
             print("Could Not Connect To {} Database".format(database), error)
 

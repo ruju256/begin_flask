@@ -1,13 +1,18 @@
-from flask import Flask, request, jsonify
+from flask import Flask, jsonify, request
 from models.users import Users
+
 
 
 app = Flask(__name__)
 
+@app.route('/', methods=['GET'])
+def home():
+    return "Welcome Home"
+
 
 @app.route('/auth/signup', methods=['POST'])
 def signup():
-    post_data = request.get_json()
+    post_data = request.json
     first_name = post_data['first_name']
     last_name = post_data['last_name']
     email = post_data['email']
