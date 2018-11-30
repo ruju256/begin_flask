@@ -19,12 +19,8 @@ class Database():
                                         )
             self.cursor = self.connection.cursor()
             self.connection.autocommit = True
-            print("Connection to {} Database Successful".format(database))
-        except Exception as error:
-            print("Could Not Connect To {} Database".format(database), error)
-
-    def creating_users_table(self):
-        create_table = """
+            self.cursor.execute(
+                """
             CREATE TABLE IF NOT EXISTS users
                 (
                     id SERIAL PRIMARY KEY ,
@@ -34,8 +30,11 @@ class Database():
                     password TEXT NOT NULL,
                     role TEXT NOT NULL
                 );"""
-        self.cursor.execute(create_table)
-        return "Table users successfully created"
+            )
+            
+            print("Connection to {} Database Successful".format(database))
+        except Exception as error:
+            print("Could Not Connect To {} Database".format(database), error)
 
     def saving_a_new_user(self, first_name, last_name, email, password, role):
         save_a_user = """
