@@ -23,8 +23,8 @@ def token_required(f):
             token_data = jwt.decode(token, BaseConfig.SECRET_KEY)
             current_user = Users.query_record(
                 'users', 'email', token_data['email'])
-        except:
-            return jsonify({"message": "Invalid Token"}), 401
+        except Exception as error:
+            return jsonify({"message": "Invalid Token"}, error), 401
         return f(current_user, *args, **kwargs)
     return decorated
 
@@ -48,22 +48,27 @@ def login():
                              })
     user = Users.query_record('users', 'email', email)
     print(user)
-    if not user:
+    if type(user) is not tuple:
         return make_response("Email not recognized", 401,
                              {
                                'WWW-Authenticate': 'Basic realm=Login Required'
                              })
-    if check_password_hash(user[4], password):
-        access_token = jwt.encode(
-                                    {
-                                     'email': user[3],
-                                     'exp': datetime.datetime.utcnow() +
-                                     datetime.timedelta(minutes=90)
-                                      }, BaseConfig.SECRET_KEY
-                                )
-        return jsonify({"access_token": access_token.decode('UTF-8')})
-    return make_response('Invalid Password', 401,
-                         {'WWW-Authenticate': 'Basic realm=Login Required'})
+    else:
+        if check_password_hash(user[4], password):
+            access_token = jwt.encode(
+                                        {
+                                         'email': user[3],
+                                         'exp': datetime.datetime.utcnow() +
+                                         datetime.timedelta(minutes=90)
+                                        }, BaseConfig.SECRET_KEY
+                                    )
+            return jsonify({
+                             "access_token": access_token.decode('UTF-8'),
+                             "Role": user[5]})
+        return make_response('Invalid Password', 401,
+                             {
+                               'WWW-Authenticate': 'Basic realm=Login Required'
+                             })
 
 
 @app.route('/auth/signup', methods=['POST'])

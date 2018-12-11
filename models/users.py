@@ -69,6 +69,6 @@ class Users(object):
     def query_record(table_name, column_name, record):
         record = db.query(table_name, column_name, record)
         if not record:
-            return {"Record Not Found"}
+            return "Record Not Found"
         else:
             return record

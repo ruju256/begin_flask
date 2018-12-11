@@ -1,7 +1,7 @@
 from app import app
 from unittest import TestCase
 import json
-from controllers import config
+from controllers.config import DevelopmentConfig, TestingConfig
 from controllers.database import Database
 from models.users import Users
 
@@ -10,7 +10,7 @@ class TestingUserFunctionality(TestCase):
     def setUp(self):        
         self.db = Database()        
         self.app = app
-        self.app.config.from_object('controllers.config.TestingConfig')       
+        self.app.config = TestingConfig.DATABASE_URI
         self.client = app.test_client()     
 
 
