@@ -65,6 +65,11 @@ class Database():
                 first_name, last_name, email, password, role)
         self.cursor.execute(save_a_user)
 
+    def saving_a_new_category(self, category):
+        save_a_category = """
+            INSERT INTO categories(category) Values('{}')""".format(category)
+        self.cursor.execute(save_a_category)
+
     def query(self, table_name, column_name, record):
         record = """SELECT * FROM {} WHERE {}='{}';""".format(
             table_name, column_name, record)

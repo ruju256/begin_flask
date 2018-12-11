@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request, make_response
 from models.users import Users
+from models.categories import Category
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 from controllers.config import BaseConfig
@@ -102,3 +103,21 @@ def signup(current_user):
                         "role": role
                         },
                 }), 201
+
+
+@app.route('/api/v1/categories', methods=['POST'])
+def add_category():
+    post_data = request.json
+    category = post_data['category']
+    if not category:
+        return make_response("Category can not be empty", 400)
+    else:
+        new_category = Category(category)
+        valid_category = new_category.validate_input()
+        if type(valid_category) is tuple:
+            return valid_category
+        else:
+            new_category.save_category()
+            return jsonify({
+                    "message": "Category {} successfully saved". format(category)
+                    }), 201
