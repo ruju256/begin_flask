@@ -23,12 +23,34 @@ class Database():
                 """
             CREATE TABLE IF NOT EXISTS users
                 (
-                    id SERIAL PRIMARY KEY ,
+                    id SERIAL PRIMARY KEY,
                     first_name TEXT NOT NULL,
                     last_name TEXT NOT NULL,
                     email TEXT NOT NULL,
                     password TEXT NOT NULL,
                     role TEXT NOT NULL
+                );"""
+            )
+
+            self.cursor.execute(
+                """
+            CREATE TABLE IF NOT EXISTS categories
+                (
+                    id SERIAL PRIMARY KEY,
+                    category text NOT NULL
+                );"""
+            )
+
+            self.cursor.execute(
+                """
+            CREATE TABLE IF NOT EXISTS products
+                (
+                    id SERIAL PRIMARY KEY,
+                    category_id INT REFERENCES categories ON UPDATE CASCADE ON DELETE CASCADE,
+                    product_name TEXT NOT NULL,
+                    unit_price TEXT NOT NULL,
+                    quantity INT NOT NULL,
+                    create_date TIMESTAMPTZ DEFAULT NOW() 
                 );"""
             )
 
