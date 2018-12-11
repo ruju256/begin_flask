@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request, make_response
 from models.users import Users
 from models.categories import Category
+from models.products import Product
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 from controllers.config import BaseConfig
@@ -121,3 +122,22 @@ def add_category():
             return jsonify({
                     "message": "Category {} successfully saved". format(category)
                     }), 201
+@app.route('/api/v1/products', methods=['POST'])
+def add_product():
+    post_data = request.json
+    category = post_data['category_id']
+    product_name = post_data['product_name']
+    price = post_data['unit_price']
+    quantity = post_data['quantity']
+
+    new_product = Product(category, product_name, price, quantity)
+    new_product.save_product()
+    return jsonify({
+        "message":"Product saved successfully",
+        "product":{
+            "category": category,
+            "name": product_name,
+            "price": price,
+            "quantity": quantity
+       }
+    }), 201

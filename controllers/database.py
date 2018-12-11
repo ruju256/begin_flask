@@ -69,6 +69,12 @@ class Database():
         save_a_category = """
             INSERT INTO categories(category) Values('{}')""".format(category)
         self.cursor.execute(save_a_category)
+    
+    def saving_a_new_product(self, category_id, product_name, unit_price, quantity):
+        save_product ="""
+             INSERT INTO products(category_id, product_name, unit_price, quantity)\
+             Values('{}','{}','{}','{}')""".format(category_id, product_name, unit_price, quantity)
+        self.cursor.execute(save_product)
 
     def query(self, table_name, column_name, record):
         record = """SELECT * FROM {} WHERE {}='{}';""".format(
