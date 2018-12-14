@@ -120,8 +120,10 @@ def add_category():
         else:
             new_category.save_category()
             return jsonify({
-                    "message": "Category {} successfully saved". format(category)
+                    "message": "{} successfully saved".format(category)
                     }), 201
+
+
 @app.route('/api/v1/products', methods=['POST'])
 def add_product():
     post_data = request.json
@@ -130,14 +132,21 @@ def add_product():
     price = post_data['unit_price']
     quantity = post_data['quantity']
 
-    new_product = Product(category, product_name, price, quantity)
-    new_product.save_product()
-    return jsonify({
-        "message":"Product saved successfully",
-        "product":{
-            "category": category,
-            "name": product_name,
-            "price": price,
-            "quantity": quantity
-       }
-    }), 201
+    verify_category = Users.query_record('categories', 'id', category)
+    print(verify_category)
+    if type(verify_category) is str:
+        return jsonify({
+            "message": "{} is an invalid category".format(category)
+        }), 400
+    else:
+        new_product = Product(category, product_name, price, quantity)
+        new_product.save_product()
+        return jsonify({
+            "message": "{} saved successfully".format(product_name),
+            "product": {
+                    "category": category,
+                    "name": product_name,
+                    "price": price,
+                    "quantity": quantity
+                }
+            }), 201
