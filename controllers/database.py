@@ -83,6 +83,12 @@ class Database():
         row = self.cursor.fetchone()
         return row
 
+    def query_all(self, table_name):
+        records = """SELECT * FROM {};""".format(table_name)
+        self.cursor.execute(records)
+        rows = self.cursor.fetchall()
+        return rows
+
     def drop_table(self, table_name):
         query = """DROP TABLE IF EXISTS {} CASCADE""".format(table_name)
         self.cursor.execute(query)

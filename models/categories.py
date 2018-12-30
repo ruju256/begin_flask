@@ -19,7 +19,7 @@ class Category(object):
         else:
             category_exists = Users.query_record("categories", "category", self.category)
             if type(category_exists) is tuple:
-                    return "Category Exists in the Database", 400
+                    return "{} is already registered".format(category_exists[1]), 400
             else:
                 return valid.append(
                     {

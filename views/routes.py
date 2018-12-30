@@ -127,26 +127,67 @@ def add_category():
 @app.route('/api/v1/products', methods=['POST'])
 def add_product():
     post_data = request.json
-    category = post_data['category_id']
+    category = int(post_data['category_id'])
     product_name = post_data['product_name']
     price = post_data['unit_price']
     quantity = post_data['quantity']
 
-    verify_category = Users.query_record('categories', 'id', category)
-    print(verify_category)
-    if type(verify_category) is str:
+    if not category or not product_name or not price or not quantity:
         return jsonify({
-            "message": "{} is an invalid category".format(category)
+            "message": "All fields should be completed"
         }), 400
     else:
         new_product = Product(category, product_name, price, quantity)
-        new_product.save_product()
+        valid_product = new_product.validate_product()
+        if type(valid_product) is tuple:
+                return valid_product
+        else:
+            verify_category = Users.query_record('categories', 'id', category)
+            if type(verify_category) is str:
+                return jsonify({
+                    "message": "{} is an invalid category".format(category)
+                }), 400
+            else:            
+                new_product.save_product()
+                return jsonify({
+                    "message": "{} saved successfully".format(product_name),
+                    "product": {
+                            "category": category,
+                            "name": product_name,
+                            "price": price,
+                            "quantity": quantity
+                        }
+                    }), 201
+
+@app.route('/api/v1/products/<int:id>', methods=['GET'])
+def product_details(id):
+    product = Users.query_record('products','id',id)
+    if type(product) is str:
+        return jsonify({"msg":"Product does not exist"}), 404
+    else:
         return jsonify({
-            "message": "{} saved successfully".format(product_name),
-            "product": {
-                    "category": category,
-                    "name": product_name,
-                    "price": price,
-                    "quantity": quantity
-                }
-            }), 201
+            "category":product[1],
+            "product_name":product[2],
+            "price":product[3],
+            "quantity":product[4]
+        })
+
+
+@app.route('/api/v1/products', methods=['GET'])
+def products():
+    if not Product.fetch_all_products('products'):
+        return jsonify({"msg":"You have no products in store"})
+    else:
+        return jsonify({"prouducts":Product.products}), 200
+
+
+# @app.route('/api/v1/products/<int:id>', methods=['GET'])
+# def edit_product(id):
+#     post_data = request.json
+#     category = int(post_data['category_id'])
+#     product_name = post_data['product_name']
+#     price = post_data['unit_price']
+#     quantity = post_data['quantity']
+
+#     product = Users.query_record('products','id', id)
+#     if type(product) is tuple:

@@ -73,3 +73,10 @@ class Users(object):
         else:
             return record
 
+    @staticmethod
+    def query_all_records(table_name):
+        data = db.query_all(table_name)
+        if data == []:
+            return "No Data Found"
+        else:
+            return data

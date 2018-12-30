@@ -4,36 +4,34 @@ import json
 from controllers.config import DevelopmentConfig, TestingConfig
 from controllers.database import Database
 from models.users import Users
+from tests.base_test import BaseTest
 
-class TestingUserFunctionality(TestCase):
+class TestUser(BaseTest):
 
-    def setUp(self):        
+    def setUp(self): 
+        self.client = app.test_client(self)        
         self.db = Database()        
-        self.app = app
-        self.app.config = TestingConfig.DATABASE_URI
-        self.client = app.test_client()     
-
-
-    def test_home_page(self):
-        response = self.client.get('/')
-        self.assertTrue(response, "Welcome Home")
+        
 
 
     def test_if_new_user_is_saved_in_database(self):
+
+        res = self.login_user_to_get_token()      
+        token = res['access_token']
+        
         user = {
             "first_name":"Kibalama",
             "last_name":"Bogere",
-            "email":"ezra@andela.com",
+            "email":"ezra@gmail.com",
             "password":"1234",
             "role":"Admin"
         }   
-        response =  self.client.post('/auth/signup',content_type='application/json', data=json.dumps(user))
+        response =  self.client.post('/auth/signup',
+                                    content_type='application/json',
+                                    data=json.dumps(user),
+                                    headers={'Authorization':'Bearer {}'.format(token)})
         
         response_data = json.loads(response.data.decode())
         self.assertEqual(response_data['msg'],"Kibalama successfully saved")        
         self.assertEqual(response.status_code, 201)
 
-
-    def tearDown(self):
-        self.db = Database()
-        self.db.drop_table('users')
