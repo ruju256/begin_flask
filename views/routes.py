@@ -147,7 +147,7 @@ def add_product():
                 return jsonify({
                     "message": "{} is an invalid category".format(category)
                 }), 400
-            else:            
+            else:
                 new_product.save_product()
                 return jsonify({
                     "message": "{} saved successfully".format(product_name),
@@ -159,29 +159,30 @@ def add_product():
                         }
                     }), 201
 
+
 @app.route('/api/v1/products/<int:id>', methods=['GET'])
 def product_details(id):
-    product = Users.query_record('products','id',id)
+    product = Users.query_record('products', 'id', id)
     if type(product) is str:
-        return make_response("Product does not exist", 400)
+        return make_response("Product does not exist",  400)
     else:
         return jsonify({
-            "category":product[1],
-            "product_name":product[2],
-            "price":product[3],
-            "quantity":product[4]
+            "category": product[1],
+            "product_name": product[2],
+            "price": product[3],
+            "quantity": product[4]
         })
 
 
 @app.route('/api/v1/products', methods=['GET'])
 def products():
     if not Product.fetch_all_records('products'):
-        return jsonify({"msg":"You have no products in store"})
+        return jsonify({"msg": "You have no products in store"})
     else:
-        return jsonify({"prouducts":Product.products}), 200
+        return jsonify({"prouducts": Product.products}), 200
 
 
-@app.route('/api/v1/products/<int:id>', methods = ['PUT'])
+@app.route('/api/v1/products/<int:id>', methods=['PUT'])
 def edit_product(id):
     post_data = request.json
 
@@ -192,26 +193,26 @@ def edit_product(id):
 
     if not category or not product_name or not price or not quantity:
         return make_response('Ensure that all fields are not empty', 400)
-    else: 
+    else:
         new_details = Product(category, product_name, price, quantity)
         product = new_details.edit_product(id)
-    if not product:
-        return jsonify({"msg":"Product Not Found"}), 400
-    else:
-        return jsonify({"New Product Details": product}), 200
+        if not product:
+            return jsonify({"msg": "Product Not Found"}), 400
+        else:
+            return jsonify({"New Product Details": product}), 200
 
 
-@app.route('/api/v1/products/<int:id>', methods = ['DELETE'])
+@app.route('/api/v1/products/<int:id>', methods=['DELETE'])
 def delete_product(id):
-    product = Users.query_record('products','id', id)
+    product = Users.query_record('products', 'id', id)
     if type(product) is str:
-        return make_response ("Product does not exist", 400)
+        return make_response("Product does not exist", 400)
     else:
         Users.delete_record('products', id)
         Product.fetch_all_records('products')
         return jsonify(
             {
-                "msg":"Product with ID {} successfully deleted".format(id),
-                "prouducts":Product.products
+                "msg": "Product with ID {} successfully deleted".format(id),
+                "prouducts": Product.products
             }
             ), 200

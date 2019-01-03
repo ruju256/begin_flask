@@ -46,12 +46,12 @@ class Database():
             CREATE TABLE IF NOT EXISTS products
                 (
                     id SERIAL PRIMARY KEY,
-                    category_id INT REFERENCES categories ON UPDATE CASCADE ON DELETE CASCADE,
+                    category_id INT REFERENCES categories ON UPDATE
+                    CASCADE ON DELETE CASCADE,
                     product_name TEXT NOT NULL,
                     unit_price TEXT NOT NULL,
                     quantity INT NOT NULL,
-                    create_date TIMESTAMPTZ DEFAULT NOW() 
-                );"""
+                    create_date TIMESTAMPTZ DEFAULT NOW());"""
             )
 
             print("Connection to {} Database Successful".format(database))
@@ -69,11 +69,16 @@ class Database():
         save_a_category = """
             INSERT INTO categories(category) Values('{}')""".format(category)
         self.cursor.execute(save_a_category)
-    
-    def saving_a_new_product(self, category_id, product_name, unit_price, quantity):
-        save_product ="""
-             INSERT INTO products(category_id, product_name, unit_price, quantity)\
-             Values('{}','{}','{}','{}')""".format(category_id, product_name, unit_price, quantity)
+
+    def saving_a_new_product(self, category_id, product_name,
+                             unit_price, quantity):
+        save_product = """
+            INSERT INTO products(category_id, product_name,
+            unit_price, quantity)\
+             Values('{}','{}','{}','{}')""".format(category_id,
+                                                   product_name,
+                                                   unit_price,
+                                                   quantity)
         self.cursor.execute(save_product)
 
     def query(self, table_name, column_name, record):
@@ -89,9 +94,11 @@ class Database():
         rows = self.cursor.fetchall()
         return rows
 
-    def edit_product(self, category_id, product_name, unit_price, quantity, id):
-        record = """UPDATE products SET category_id = '{}', product_name = '{}', unit_price = '{}', quantity = '{}'\
-        WHERE id = '{}';""". format(category_id, product_name, unit_price, quantity, id)
+    def edit_product(self, category_id,
+                     product_name, unit_price, quantity, id):
+        record = """UPDATE products SET category_id = '{}', product_name = '{}',\
+        unit_price = '{}', quantity = '{}' WHERE id = '{}';""". format(
+            category_id, product_name, unit_price, quantity, id)
         self.cursor.execute(record)
 
     def delete_record(self, table_name, id):
