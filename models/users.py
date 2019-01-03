@@ -80,3 +80,9 @@ class Users(object):
             return "No Data Found"
         else:
             return data
+
+    @staticmethod
+    def delete_record(table_name, id):
+        db.delete_record(table_name, id)
+        return "record successfully deleted"
+

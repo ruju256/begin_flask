@@ -39,7 +39,7 @@ class Product:
         return
 
     @staticmethod
-    def fetch_all_products(table_name):
+    def fetch_all_records(table_name):
        
         my_products = Users.query_all_records('products')
 
@@ -71,3 +71,6 @@ class Product:
                 "unit_price":new_product[3],
                 "quantity":new_product[4]
             }
+
+
+    

@@ -94,6 +94,11 @@ class Database():
         WHERE id = '{}';""". format(category_id, product_name, unit_price, quantity, id)
         self.cursor.execute(record)
 
+    def delete_record(self, table_name, id):
+        record = """DELETE FROM {} WHERE id = '{}';""".format(table_name, id)
+        self.cursor.execute(record)
+        return "Item successfully deleted"
+
     def drop_table(self, table_name):
         query = """DROP TABLE IF EXISTS {} CASCADE""".format(table_name)
         self.cursor.execute(query)

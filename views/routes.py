@@ -163,7 +163,7 @@ def add_product():
 def product_details(id):
     product = Users.query_record('products','id',id)
     if type(product) is str:
-        return jsonify({"msg":"Product does not exist"}), 404
+        return make_response("Product does not exist", 400)
     else:
         return jsonify({
             "category":product[1],
@@ -175,7 +175,7 @@ def product_details(id):
 
 @app.route('/api/v1/products', methods=['GET'])
 def products():
-    if not Product.fetch_all_products('products'):
+    if not Product.fetch_all_records('products'):
         return jsonify({"msg":"You have no products in store"})
     else:
         return jsonify({"prouducts":Product.products}), 200
@@ -200,3 +200,18 @@ def edit_product(id):
     else:
         return jsonify({"New Product Details": product}), 200
 
+
+@app.route('/api/v1/products/<int:id>', methods = ['DELETE'])
+def delete_product(id):
+    product = Users.query_record('products','id', id)
+    if type(product) is str:
+        return make_response ("Product does not exist", 400)
+    else:
+        Users.delete_record('products', id)
+        Product.fetch_all_records('products')
+        return jsonify(
+            {
+                "msg":"Product with ID {} successfully deleted".format(id),
+                "prouducts":Product.products
+            }
+            ), 200
