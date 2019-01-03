@@ -181,13 +181,22 @@ def products():
         return jsonify({"prouducts":Product.products}), 200
 
 
-# @app.route('/api/v1/products/<int:id>', methods=['GET'])
-# def edit_product(id):
-#     post_data = request.json
-#     category = int(post_data['category_id'])
-#     product_name = post_data['product_name']
-#     price = post_data['unit_price']
-#     quantity = post_data['quantity']
+@app.route('/api/v1/products/<int:id>', methods = ['PUT'])
+def edit_product(id):
+    post_data = request.json
 
-#     product = Users.query_record('products','id', id)
-#     if type(product) is tuple:
+    category = int(post_data['category_id'])
+    product_name = post_data['product_name']
+    price = post_data['unit_price']
+    quantity = post_data['quantity']
+
+    if not category or not product_name or not price or not quantity:
+        return make_response('Ensure that all fields are not empty', 400)
+    else: 
+        new_details = Product(category, product_name, price, quantity)
+        product = new_details.edit_product(id)
+    if not product:
+        return jsonify({"msg":"Product Not Found"}), 400
+    else:
+        return jsonify({"New Product Details": product}), 200
+

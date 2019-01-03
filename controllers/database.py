@@ -89,6 +89,11 @@ class Database():
         rows = self.cursor.fetchall()
         return rows
 
+    def edit_product(self, category_id, product_name, unit_price, quantity, id):
+        record = """UPDATE products SET category_id = '{}', product_name = '{}', unit_price = '{}', quantity = '{}'\
+        WHERE id = '{}';""". format(category_id, product_name, unit_price, quantity, id)
+        self.cursor.execute(record)
+
     def drop_table(self, table_name):
         query = """DROP TABLE IF EXISTS {} CASCADE""".format(table_name)
         self.cursor.execute(query)

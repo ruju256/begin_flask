@@ -57,3 +57,17 @@ class Product:
                 }
                 Product.products.append(product)
             return Product.products
+
+    def edit_product(self, id):
+        product = Users.query_record('products','id', id)
+        if not product:
+            return "Product not found"
+        else:
+            db.edit_product(self.category_id, self.product_name, self.unit_price, self.quantity, id)
+            new_product = Users.query_record('products', 'id', id)
+            return {
+                "category_id": new_product[1],
+                "product_name":new_product[2],
+                "unit_price":new_product[3],
+                "quantity":new_product[4]
+            }
