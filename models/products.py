@@ -16,15 +16,23 @@ class Product:
 
     def validate_product(self):
         valid = []
-        if(re.search("[$#@!%^&*(),_ +=|;:><?/|]", self.product_name)):
+        if(re.search("[$#@!%^&*(),_+=|;:><?/|]", self.product_name)):
             return "Invalid Product Name", 400
         else:
-            return valid.append({
-                    "category_id": self.category_id,
-                    "product_name": self.product_name,
-                    "unit_price": self.unit_price,
-                    "quantity": self.quantity
-                })
+            product_exists = Users.query_record("products",
+                                                "product_name",
+                                                self.product_name)
+            if type(product_exists) is tuple:
+                    return "{} is already registered".format(
+                                                             product_exists[2]
+                                                            ), 400
+            else:
+                return valid.append({
+                        "category_id": self.category_id,
+                        "product_name": self.product_name,
+                        "unit_price": self.unit_price,
+                        "quantity": self.quantity
+                    })
 
     def save_product(self):
         db.saving_a_new_product(
