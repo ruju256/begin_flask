@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request, make_response
 from models.users import Users
 from models.categories import Category
 from models.products import Product
+from models.sales import Sales
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 from controllers.config import BaseConfig
@@ -216,3 +217,47 @@ def delete_product(id):
                 "prouducts": Product.products
             }
             ), 200
+
+
+@app.route('/api/v1/sales', methods=['POST'])
+def make_a_sale():
+    post_data = request.json
+    product_name = post_data['product_name']
+    qty_bought = int(post_data['quantity_bought'])
+
+    if not product_name or not qty_bought:
+        return jsonify({
+            "message": "All fields should be completed"
+        }), 400
+    else:
+        product = Users.query_record('products', 'product_name', product_name)
+        if type(product) is str:
+            return make_response("Product does not exist", 400)
+        else:
+            product_id = product[0]
+            user = 1
+            price = product[3]
+            amount = int(price) * qty_bought
+
+            if product[4] == 0:
+                return make_response("currently Out of Stock", 400)
+
+            elif qty_bought > product[4]:
+                return make_response("Insufficient Stock", 400)
+            else:
+                sale = Sales(product_id,
+                             user,
+                             product_name,
+                             price,
+                             qty_bought,
+                             amount)
+                sale.new_sale()
+                return jsonify({
+                        "message": "{} sold successfully".format(product_name),
+                        "sale": {
+                                "product_name": product_name,
+                                "price": price,
+                                "quantity bought": qty_bought,
+                                "Total amount": amount
+                            }
+                        }), 201

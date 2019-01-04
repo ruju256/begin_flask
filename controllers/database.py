@@ -54,6 +54,22 @@ class Database():
                     create_date TIMESTAMPTZ DEFAULT NOW());"""
             )
 
+            self.cursor.execute(
+                """
+            CREATE TABLE IF NOT EXISTS sales
+                (
+                    id SERIAL PRIMARY KEY,
+                    product_id INT REFERENCES products ON UPDATE
+                    CASCADE ON DELETE CASCADE,
+                    user_id INT REFERENCES users ON UPDATE
+                    CASCADE ON DELETE CASCADE,
+                    product_name TEXT NOT NULL,
+                    price INT NOT NULL,
+                    quantity_bought INT NOT NULL,
+                    amount INT NOT NULL,
+                    create_date TIMESTAMPTZ DEFAULT NOW());"""
+            )
+
             print("Connection to {} Database Successful".format(database))
         except Exception as error:
             print("Could Not Connect To {} Database".format(database), error)
@@ -105,6 +121,25 @@ class Database():
         record = """DELETE FROM {} WHERE id = '{}';""".format(table_name, id)
         self.cursor.execute(record)
         return "Item successfully deleted"
+
+    def saving_a_new_sale(self,
+                          product_id,
+                          user_id,
+                          product_name,
+                          price,
+                          quantity_bought,
+                          amount):
+        save_sale = """INSERT INTO \
+        sales(product_id, user_id, product_name,\
+              price, quantity_bought, amount)\
+        Values('{}','{}','{}','{}','{}','{}')""".format(
+                                                    product_id,
+                                                    user_id,
+                                                    product_name,
+                                                    price,
+                                                    quantity_bought,
+                                                    amount)
+        self.cursor.execute(save_sale)
 
     def drop_table(self, table_name):
         query = """DROP TABLE IF EXISTS {} CASCADE""".format(table_name)
