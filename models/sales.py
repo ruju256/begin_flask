@@ -1,5 +1,6 @@
 from controllers.database import Database
 from models.products import Product
+from models.users import Users
 
 db = Database()
 
@@ -35,3 +36,21 @@ class Sales(Product):
     def update_prod_qty_on_sale(id, quantity):
         db.update_qty_on_sale(id, quantity)
         return
+
+    @staticmethod
+    def fetch_all_sales(table_name):
+        my_sales = Users.query_all_records('sales')
+        if my_sales == []:
+            return "No Sales Found"
+        else:
+            Sales.sales.clear()
+            for sale in my_sales:
+                sale = {
+                    "id": sale[0],
+                    "amount": sale[6],
+                    "product_name": sale[3],
+                    "price": sale[4],
+                    "quantity_sold": sale[5]
+                }
+                Sales.sales.append(sale)
+            return Sales.sales

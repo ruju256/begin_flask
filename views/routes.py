@@ -263,3 +263,11 @@ def make_a_sale():
                                 "Total amount": amount
                             }
                         }), 201
+
+
+@app.route('/api/v1/sales', methods=['GET'])
+def sales():
+    if not Sales.fetch_all_sales('sales'):
+        return jsonify({"msg": "You have not made any sales yet"})
+    else:
+        return jsonify({"sales": Sales.sales}), 200
