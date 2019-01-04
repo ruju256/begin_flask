@@ -59,7 +59,7 @@ class Product:
                     "quantity": product[4]
                 }
                 Product.products.append(product)
-                return Product.products
+            return Product.products
 
     def edit_product(self, id):
         product = Users.query_record('products', 'id', id)

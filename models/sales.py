@@ -30,3 +30,8 @@ class Sales(Product):
                              self.quantity_bought,
                              self.amount)
         return
+
+    @staticmethod
+    def update_prod_qty_on_sale(id, quantity):
+        db.update_qty_on_sale(id, quantity)
+        return

@@ -234,7 +234,7 @@ def make_a_sale():
         if type(product) is str:
             return make_response("Product does not exist", 400)
         else:
-            product_id = product[0]
+            product_id = int(product[0])
             user = 1
             price = product[3]
             amount = int(price) * qty_bought
@@ -242,7 +242,7 @@ def make_a_sale():
             if product[4] == 0:
                 return make_response("currently Out of Stock", 400)
 
-            elif qty_bought > product[4]:
+            elif qty_bought > int(product[4]):
                 return make_response("Insufficient Stock", 400)
             else:
                 sale = Sales(product_id,
@@ -252,6 +252,8 @@ def make_a_sale():
                              qty_bought,
                              amount)
                 sale.new_sale()
+                new_quantity = int(product[4]) - qty_bought
+                Sales.update_prod_qty_on_sale(product_id, new_quantity)
                 return jsonify({
                         "message": "{} sold successfully".format(product_name),
                         "sale": {

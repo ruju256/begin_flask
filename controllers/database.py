@@ -113,7 +113,7 @@ class Database():
     def edit_product(self, category_id,
                      product_name, unit_price, quantity, id):
         record = """UPDATE products SET category_id = '{}', product_name = '{}',\
-        unit_price = '{}', quantity = '{}' WHERE id = '{}';""". format(
+        unit_price = '{}', quantity = '{}' WHERE id = '{}';""".format(
             category_id, product_name, unit_price, quantity, id)
         self.cursor.execute(record)
 
@@ -140,6 +140,11 @@ class Database():
                                                     quantity_bought,
                                                     amount)
         self.cursor.execute(save_sale)
+
+    def update_qty_on_sale(self, id, quantity):
+        record = """UPDATE products SET quantity = '{}' \
+                    WHERE id = '{}';""".format(quantity, id)
+        self.cursor.execute(record)
 
     def drop_table(self, table_name):
         query = """DROP TABLE IF EXISTS {} CASCADE""".format(table_name)

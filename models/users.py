@@ -85,4 +85,3 @@ class Users(object):
     def delete_record(table_name, id):
         db.delete_record(table_name, id)
         return "record successfully deleted"
-
