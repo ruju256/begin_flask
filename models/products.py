@@ -51,6 +51,8 @@ class Product:
         else:
             Product.products.clear()
             for product in my_products:
+                if int(product[4]) == 0:
+                    continue
                 product = {
                     "id": product[0],
                     "category": product[1],
