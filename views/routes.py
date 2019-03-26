@@ -42,15 +42,13 @@ def login():
     post_data = request.json
     email = post_data['email']
     password = post_data['password']
-    auth = request.authorization
 
-    if not auth or not email or not password:
+    if not email or not password:
         return make_response('All fields should be completed', 401,
                              {
                                'WWW-Authenticate': 'Basic realm=Login Required'
                              })
     user = Users.query_record('users', 'email', email)
-    print(user)
     if type(user) is not tuple:
         return make_response("Email not recognized", 401,
                              {
@@ -67,7 +65,8 @@ def login():
                                     )
             return jsonify({
                              "access_token": access_token.decode('UTF-8'),
-                             "Role": user[5]})
+                             "Role": user[5]
+                             })
         return make_response('Invalid Password', 401,
                              {
                                'WWW-Authenticate': 'Basic realm=Login Required'
@@ -86,9 +85,8 @@ def signup(current_user):
         )
     role = post_data['role']
     if current_user[5] != 'Admin':
-        return make_response("Only Administrators Can Add New Members", 400)
+        return make_response("Only Administrators Can Add New Members", 401)
     else:
-        print(current_user[5])
         new_user = Users(first_name, last_name, email, hashed_password, role)
         valid_user = new_user.validate_input()
         if type(valid_user) is tuple:
@@ -108,7 +106,8 @@ def signup(current_user):
 
 
 @app.route('/api/v1/categories', methods=['POST'])
-def add_category():
+@token_required
+def add_category(current_user):
     post_data = request.json
     category = post_data['category']
     if not category:
@@ -126,7 +125,8 @@ def add_category():
 
 
 @app.route('/api/v1/products', methods=['POST'])
-def add_product():
+@token_required
+def add_product(current_user):
     post_data = request.json
     category = int(post_data['category_id'])
     product_name = post_data['product_name']
@@ -162,7 +162,8 @@ def add_product():
 
 
 @app.route('/api/v1/products/<int:id>', methods=['GET'])
-def product_details(id):
+@token_required
+def product_details(current_user, id):
     product = Users.query_record('products', 'id', id)
     if type(product) is str:
         return make_response("Product does not exist",  400)
@@ -176,7 +177,8 @@ def product_details(id):
 
 
 @app.route('/api/v1/products', methods=['GET'])
-def products():
+@token_required
+def products(current_user):
     if not Product.fetch_all_records('products'):
         return jsonify({"msg": "You have no products in store"})
     else:
@@ -184,7 +186,8 @@ def products():
 
 
 @app.route('/api/v1/products/<int:id>', methods=['PUT'])
-def edit_product(id):
+@token_required
+def edit_product(current_user, id):
     post_data = request.json
 
     category = int(post_data['category_id'])
@@ -204,7 +207,8 @@ def edit_product(id):
 
 
 @app.route('/api/v1/products/<int:id>', methods=['DELETE'])
-def delete_product(id):
+@token_required
+def delete_product(current_user, id):
     product = Users.query_record('products', 'id', id)
     if type(product) is str:
         return make_response("Product does not exist", 400)
@@ -220,7 +224,8 @@ def delete_product(id):
 
 
 @app.route('/api/v1/sales', methods=['POST'])
-def make_a_sale():
+@token_required
+def make_a_sale(current_user, id):
     post_data = request.json
     product_name = post_data['product_name']
     qty_bought = int(post_data['quantity_bought'])
@@ -266,7 +271,8 @@ def make_a_sale():
 
 
 @app.route('/api/v1/sales', methods=['GET'])
-def sales():
+@token_required
+def sales(current_user):
     if not Sales.fetch_all_sales('sales'):
         return jsonify({"msg": "You have not made any sales yet"})
     else:
