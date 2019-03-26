@@ -46,14 +46,20 @@ def login():
     if not email or not password:
         return make_response('All fields should be completed', 401,
                              {
-                               'WWW-Authenticate': 'Basic realm=Login Required'
-                             })
+                                "WWW-Authenticate": "\
+                                    Basic realm=Login Required"
+                             }
+                             )
+
     user = Users.query_record('users', 'email', email)
     if type(user) is not tuple:
         return make_response("Email not recognized", 401,
                              {
-                               'WWW-Authenticate': 'Basic realm=Login Required'
-                             })
+                                "WWW-Authenticate": "\
+                                    Basic realm=Login Required"
+                             }
+                             )
+
     else:
         if check_password_hash(user[4], password):
             access_token = jwt.encode(
@@ -63,14 +69,15 @@ def login():
                                          datetime.timedelta(minutes=90)
                                         }, BaseConfig.SECRET_KEY
                                     )
-            return jsonify({
-                             "access_token": access_token.decode('UTF-8'),
-                             "Role": user[5]
-                             })
+            return jsonify({"access_token": access_token.decode('UTF-8'),
+                            "Role": user[5]
+                            })
         return make_response('Invalid Password', 401,
                              {
-                               'WWW-Authenticate': 'Basic realm=Login Required'
-                             })
+                                "WWW-Authenticate": "\
+                                    Basic realm=Login Required"
+                             }
+                             )
 
 
 @app.route('/auth/signup', methods=['POST'])
@@ -85,7 +92,7 @@ def signup(current_user):
         )
     role = post_data['role']
     if current_user[5] != 'Admin':
-        return make_response("Only Administrators Can Add New Members", 401)
+        return make_response("Only Administrators Can Add New Members", 400)
     else:
         new_user = Users(first_name, last_name, email, hashed_password, role)
         valid_user = new_user.validate_input()
@@ -99,7 +106,6 @@ def signup(current_user):
                         "first_name": first_name,
                         "last_name": last_name,
                         "email": email,
-                        "password": hashed_password,
                         "role": role
                         },
                 }), 201
