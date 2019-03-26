@@ -20,30 +20,27 @@ class TestUser(BaseTest):
         print(response)
         self.assertEqual(response.status_code, 200)
 
-    # def test_if_new_user_is_saved_in_database(self):
+    def test_if_new_user_is_saved_in_database(self):
 
-    #     res = self.login_user_to_get_token()
-    #     print(res)
-    #     token = res['access_token']
-    #     user = {
-    #         "first_name": "Kibalama",
-    #         "last_name": "Bogere",
-    #         "email": "ezra@gmail.com",
-    #         "password": "1234",
-    #         "role": "Admin"
-    #     }
-    #     reply = self.client.post('/auth/signup',
-    #                              content_type='application/json',
-    #                              headers=dict(Authorization='Bearer ' +
-    #                                           token),
-    #                              data=json.dumps(user),
-    #                              )
+        res = self.login_user_to_get_token()
+        token = res['access_token']
+        user = {
+            "first_name": "Kibalama",
+            "last_name": "Bogere",
+            "email": "ezrai@gmail.com",
+            "password": "1234",
+            "role": "Admin"
+        }
+        reply = self.client.post('/auth/signup',
+                                 content_type='application/json',
+                                 headers={'access-token': token},
+                                 data=json.dumps(user),
+                                 )
 
-    #     print(token)
-    #     response_data = json.loads(reply.data.decode())
-    #     # print(response_data)
-    #     self.assertEqual(response_data, "Kibalama successfully saved")
-    #     self.assertEqual(reply.status_code, 201)
+        response_data = json.loads(reply.data)
+        print(response_data)
+        self.assertEqual(response_data['msg'], "Kibalama successfully saved")
+        self.assertEqual(reply.status_code, 201)
 
         def tearDown(self):
             pass

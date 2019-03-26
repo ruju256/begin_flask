@@ -5,7 +5,7 @@ from models.products import Product
 from models.sales import Sales
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
-from controllers.config import BaseConfig
+from views.config import BaseConfig
 import jwt
 import datetime
 
