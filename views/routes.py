@@ -188,7 +188,7 @@ def products(current_user):
     if not Product.fetch_all_records('products'):
         return jsonify({"msg": "You have no products in store"})
     else:
-        return jsonify({"prouducts": Product.products}), 200
+        return jsonify({"products": Product.products}), 200
 
 
 @app.route('/api/v1/products/<int:id>', methods=['PUT'])

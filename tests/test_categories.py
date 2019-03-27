@@ -4,7 +4,7 @@ from controllers.database import Database
 from tests.base_test import BaseTest
 
 
-class TestProducts(BaseTest):
+class TestCategories(BaseTest):
 
     def setUp(self):
         self.client = app.test_client(self)
