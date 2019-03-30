@@ -23,9 +23,9 @@ class Product:
                                                 "product_name",
                                                 self.product_name)
             if type(product_exists) is tuple:
-                    return "{} is already registered".format(
-                                                             product_exists[2]
-                                                            ), 400
+                return "{} is already registered".format(
+                                                          product_exists[2]
+                                                         ), 400
             else:
                 return valid.append({
                         "category_id": self.category_id,
@@ -46,13 +46,11 @@ class Product:
     @staticmethod
     def fetch_all_records(table_name):
         my_products = Users.query_all_records('products')
-        if my_products == []:
-            return "No Products Found"
+        if not my_products:
+            return
         else:
             Product.products.clear()
             for product in my_products:
-                if int(product[4]) == 0:
-                    continue
                 product = {
                     "id": product[0],
                     "category": product[1],
@@ -66,7 +64,7 @@ class Product:
     def edit_product(self, id):
         product = Users.query_record('products', 'id', id)
         if not product:
-            return "Product not found"
+            return
         else:
             db.edit_product(self.category_id,
                             self.product_name,

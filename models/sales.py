@@ -40,8 +40,8 @@ class Sales(Product):
     @staticmethod
     def fetch_all_sales(table_name):
         my_sales = Users.query_all_records('sales')
-        if my_sales == []:
-            return "No Sales Found"
+        if not my_sales:
+            return
         else:
             Sales.sales.clear()
             for sale in my_sales:

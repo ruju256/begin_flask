@@ -185,8 +185,9 @@ def product_details(current_user, id):
 @app.route('/api/v1/products', methods=['GET'])
 @token_required
 def products(current_user):
-    if not Product.fetch_all_records('products'):
-        return jsonify({"msg": "You have no products in store"})
+    my_products = Product.fetch_all_records('products')
+    if not my_products:
+        return jsonify({"msg": "You have no products in store"}), 200
     else:
         return jsonify({"products": Product.products}), 200
 
@@ -202,7 +203,7 @@ def edit_product(current_user, id):
     quantity = post_data['quantity']
 
     if not category or not product_name or not price or not quantity:
-        return make_response('Ensure that all fields are not empty', 400)
+        return jsonify({"msg": "Ensure that all fields are not empty"}), 400
     else:
         new_details = Product(category, product_name, price, quantity)
         product = new_details.edit_product(id)
@@ -216,7 +217,7 @@ def edit_product(current_user, id):
 @token_required
 def delete_product(current_user, id):
     product = Users.query_record('products', 'id', id)
-    if type(product) is str:
+    if not product:
         return make_response("Product does not exist", 400)
     else:
         Users.delete_record('products', id)

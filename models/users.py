@@ -69,15 +69,15 @@ class Users(object):
     def query_record(table_name, column_name, record):
         record = db.query(table_name, column_name, record)
         if not record:
-            return "Record Not Found"
+            return
         else:
             return record
 
     @staticmethod
     def query_all_records(table_name):
         data = db.query_all(table_name)
-        if data == []:
-            return "No Data Found"
+        if not data:
+            return
         else:
             return data
 
