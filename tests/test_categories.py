@@ -55,7 +55,7 @@ class TestCategories(BaseTest):
     def test_add_products_category_successfully(self):
         res = self.login_admin_to_get_token()
         token = res['access_token']
-        category = {"category": "Textiles"}
+        category = {"category": "Art"}
         reply = self.client.post('/api/v1/categories',
                                  content_type='application/json',
                                  headers={'access-token': token},
@@ -65,4 +65,4 @@ class TestCategories(BaseTest):
         response_data = json.loads(reply.data)
         self.assertEqual(reply.status_code, 201)
         self.assertEqual(response_data['message'],
-                         "Textiles successfully saved")
+                         "Art successfully saved")

@@ -232,18 +232,16 @@ def delete_product(current_user, id):
 
 @app.route('/api/v1/sales', methods=['POST'])
 @token_required
-def make_a_sale(current_user, id):
+def make_a_sale(current_user):
     post_data = request.json
     product_name = post_data['product_name']
     qty_bought = int(post_data['quantity_bought'])
 
     if not product_name or not qty_bought:
-        return jsonify({
-            "message": "All fields should be completed"
-        }), 400
+        return make_response("All fields should be completed", 400)
     else:
         product = Users.query_record('products', 'product_name', product_name)
-        if type(product) is str:
+        if not product:
             return make_response("Product does not exist", 400)
         else:
             product_id = int(product[0])
